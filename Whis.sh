@@ -129,8 +129,8 @@ delete_forward() {
 # 添加转发规则
 add_forward() {
     while true; do
-        read -p "请输入IP: " ip
-        read -p "请输入端口: " port
+        read -p "输入落地IP: " ip
+        read -p "落地协议端口: " port
         # 追加到config.toml文件
         echo "[[endpoints]]
 listen = \"0.0.0.0:$port\"
