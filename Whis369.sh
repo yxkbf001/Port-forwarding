@@ -51,8 +51,7 @@ local dns1_ipv4="1.1.1.1"
 		local dns2_ipv4="8.8.8.8"
 		local dns1_ipv6="2606:4700:4700::1111"
 		local dns2_ipv6="2001:4860:4860::8888"
-		set_dns
-		send_stats "国外DNS优化"
+		
 }
 
 # 卸载realm
