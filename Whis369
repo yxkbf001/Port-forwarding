@@ -24,6 +24,47 @@ show_menu() {
     echo "0. 退出脚本"
     echo "================="
 
+
+# 主循环
+while true; do
+    show_menu
+    read -p "请选择一个选项: " choice
+    case $choice in
+        1)
+            deploy_realm
+            ;;
+        2)
+            add_forward
+            ;;
+        3)
+            delete_forward
+            ;;
+        4)
+            start_service
+            ;;
+        5)
+            stop_service
+            ;;
+        6)
+            uninstall_realm
+            ;;
+        7)
+            update_realm
+            ;;
+        8)
+            restart_service
+            ;;
+        0)
+            echo "退出脚本。"
+            exit 0
+            ;;
+        *)
+            echo "无效选项: $choice"
+            ;;
+    esac
+    read -p "按任意键继续..." key
+done
+
 }
 
 
