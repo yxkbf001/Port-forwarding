@@ -31,6 +31,9 @@ show_menu() {
     echo "4. 启动服务"
     echo "5. 停止服务"
     echo "6. 一键卸载"
+    echo "7. 检测更新"
+    echo "8. 重启服务"
+    echo "0. 退出脚本"
     echo "================="
     echo -e "realm 状态：${realm_status_color}${realm_status}\033[0m"
     echo -n "realm 转发状态："
@@ -41,10 +44,34 @@ show_menu() {
 deploy_realm() {
     mkdir -p /root/realm
     cd /root/realm
-    wget -O realm.tar.gz https://github.com/zhboner/realm/releases/download/v2.7.0/realm-x86_64-unknown-linux-gnu.tar.gz
+
+    _version=$(curl -s https://api.github.com/repos/zhboner/realm/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+    if [ -z "$_version" ]; then
+        echo "获取版本号失败，请检查本机能否链接 https://api.github.com/repos/zhboner/realm/releases/latest"
+        return 1
+    else
+        echo "当前最新版本为: ${_version}"
+    fi
+
+    arch=$(arch)
+    case $arch in
+        x86_64)
+            download_url="https://github.com/zhboner/realm/releases/download/${_version}/realm-x86_64-unknown-linux-gnu.tar.gz"
+            ;;
+        aarch64)
+            download_url="https://github.com/zhboner/realm/releases/download/${_version}/realm-aarch64-unknown-linux-gnu.tar.gz"
+            ;;
+        *)
+            echo "不支持的架构: $arch"
+            return
+            ;;
+    esac
+
+    wget -O realm.tar.gz "$download_url"
     tar -xvf realm.tar.gz
     chmod +x realm
-    # 创建服务文件
+
     echo "[Unit]
 Description=realm
 After=network-online.target
@@ -61,10 +88,9 @@ ExecStart=/root/realm/realm -c /root/realm/config.toml
 
 [Install]
 WantedBy=multi-user.target" > /etc/systemd/system/realm.service
+
     systemctl daemon-reload
-    # 更新realm状态变量
-    realm_status="已安装"
-    realm_status_color="\033[0;32m" # 绿色
+    update_realm_status
     echo "部署完成。"
 }
 
