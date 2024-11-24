@@ -129,11 +129,12 @@ delete_forward() {
 # 添加转发规则
 add_forward() {
     while true; do
+        read -p "本地监听IP: " port2
         read -p "输入落地IP: " ip
         read -p "落地协议端口: " port
         # 追加到config.toml文件
         echo "[[endpoints]]
-listen = \"0.0.0.0:$port\"
+listen = \"0.0.0.0:$port2\"
 remote = \"$ip:$port\"" >> /root/realm/config.toml
         
         read -p "是否继续添加(Y/N)? " answer
